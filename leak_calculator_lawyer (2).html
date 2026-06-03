@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Quiet Leak · Traffic Firm Revenue Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Space+Mono:wght@400;700&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d0f12;--panel:#14171c;--panel-2:#1a1e24;--line:#262b33;
+    --ink:#eef1f4;--muted:#8b95a3;--faint:#5a6470;
+    --red:#ff5a4d;--red-dim:#3a2220;--teal:#3ee6b0;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:'Sora',sans-serif;font-weight:300;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 70% 45% at 75% -8%, rgba(255,90,77,.14), transparent 60%),radial-gradient(ellipse 55% 38% at 8% 108%, rgba(62,230,176,.07), transparent 60%),radial-gradient(circle at 50% 40%, rgba(120,140,200,.04), transparent 55%)}
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;background-image:radial-gradient(rgba(255,255,255,.025) 1px,transparent 1px);background-size:3px 3px}
+  .wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:clamp(28px,6vw,72px) clamp(20px,5vw,56px) 90px}
+  .eyebrow{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--red);margin-bottom:22px;display:flex;align-items:center;gap:10px}
+  .eyebrow::before{content:"";width:28px;height:1px;background:var(--red)}
+  h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(34px,6.5vw,60px);line-height:1.04;letter-spacing:-.02em;margin-bottom:20px;max-width:15ch}
+  h1 em{font-style:italic;color:var(--red)}
+  .sub{color:var(--muted);font-size:clamp(15px,2.2vw,18px);max-width:48ch;font-weight:300}
+  .grid{display:grid;grid-template-columns:1fr;gap:18px;margin-top:40px}
+  @media(min-width:760px){.grid{grid-template-columns:1.05fr .95fr;gap:24px}}
+  .card{background:rgba(24,28,34,.55);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:clamp(22px,4vw,32px);box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 20px 50px -20px rgba(0,0,0,.6)}
+  .card-label{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin-bottom:24px}
+  .field{margin-bottom:26px}.field:last-child{margin-bottom:0}
+  .field-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:13px;gap:12px}
+  .field-name{font-size:14.5px;color:var(--ink);font-weight:400}
+  .field-val{font-family:'Space Mono',monospace;font-size:16px;font-weight:700;color:var(--teal);white-space:nowrap}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:4px;background:linear-gradient(to right,var(--teal) 0%,var(--teal) var(--p,30%),var(--line) var(--p,30%),var(--line) 100%);outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:var(--ink);border:3px solid var(--teal);cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.4);transition:transform .15s ease}
+  input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.18)}
+  input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--ink);border:3px solid var(--teal);cursor:pointer}
+  .field-hint{font-size:12.5px;color:var(--faint);margin-top:9px;font-weight:300}
+  .result{margin-top:18px;background:rgba(40,28,26,.5);backdrop-filter:blur(20px) saturate(150%);-webkit-backdrop-filter:blur(20px) saturate(150%);border:1px solid rgba(255,90,77,.22);border-radius:18px;overflow:hidden;position:relative;box-shadow:0 1px 0 rgba(255,255,255,.05) inset,0 24px 60px -24px rgba(255,90,77,.18)}
+  .result::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 50% 0%,rgba(255,90,77,.12),transparent 70%);pointer-events:none}
+  .result-inner{padding:clamp(28px,5vw,44px);text-align:center;position:relative}
+  .result-label{font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--red);margin-bottom:16px}
+  .big-num{font-family:'Fraunces',serif;font-weight:600;color:var(--red);font-size:clamp(52px,11vw,120px);line-height:.95;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+  .big-num .cur{font-size:.5em;vertical-align:.32em;font-weight:500;margin-right:.04em}
+  .result-cap{color:var(--muted);font-size:15px;margin-top:18px;font-weight:300}
+  .result-cap strong{color:var(--ink);font-weight:500}
+  .breakdown{display:flex;flex-wrap:wrap;justify-content:center;border-top:1px solid var(--line)}
+  .bd{flex:1;min-width:140px;padding:20px;text-align:center;border-right:1px solid var(--line)}
+  .bd:last-child{border-right:none}
+  .bd-num{font-family:'Space Mono',monospace;font-size:21px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+  .bd-lab{font-size:12px;color:var(--faint);margin-top:6px}
+  .cta{margin-top:40px;text-align:center;padding:clamp(28px,5vw,44px);border:1px solid rgba(255,255,255,.08);border-radius:18px;background:rgba(30,34,40,.55);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);box-shadow:0 1px 0 rgba(255,255,255,.05) inset}
+  .cta h2{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(22px,3.5vw,30px);letter-spacing:-.015em;margin-bottom:12px}
+  .seen{margin-top:18px;background:rgba(24,28,34,.5);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:clamp(24px,4.5vw,38px);box-shadow:0 1px 0 rgba(255,255,255,.04) inset}
+  .seen-label{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin-bottom:26px}
+  .seen-grid{display:grid;grid-template-columns:1fr;gap:22px}
+  @media(min-width:680px){.seen-grid{grid-template-columns:repeat(3,1fr);gap:28px}}
+  .seen-item{display:flex;flex-direction:column;gap:12px}
+  .seen-n{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--red);letter-spacing:.1em}
+  .seen-item p{font-size:14px;color:var(--muted);font-weight:300;line-height:1.65}
+  .seen-foot{margin-top:28px;padding-top:22px;border-top:1px solid var(--line);font-size:14px;color:var(--faint);font-weight:300;line-height:1.7}
+  .cta p{color:var(--muted);font-size:15px;max-width:42ch;margin:0 auto 26px;font-weight:300}
+  .btn{display:inline-block;font-family:'Sora',sans-serif;font-weight:500;font-size:15.5px;background:var(--red);color:#fff;text-decoration:none;padding:16px 38px;border-radius:11px;transition:transform .18s ease,box-shadow .18s ease;box-shadow:0 8px 28px rgba(255,90,77,.28)}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(255,90,77,.4)}
+  .cta-fine{margin-top:18px;font-size:12.5px;color:var(--faint)}
+  .foot{margin-top:46px;text-align:center;font-size:12.5px;color:var(--faint);font-weight:300;line-height:1.7}
+  .foot .mono{font-family:'Space Mono',monospace;color:var(--muted)}
+  .reveal{opacity:0;transform:translateY(16px);animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+  .d1{animation-delay:.05s}.d2{animation-delay:.13s}.d3{animation-delay:.22s}.d4{animation-delay:.32s}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow reveal d1">Quixas Technology · For Traffic &amp; DUI Firms</div>
+  <h1 class="reveal d1">The cases that leave <em>without setting off any alarm</em>.</h1>
+  <p class="sub reveal d2">After building intake systems for a number of traffic firms, you start to see the same leak almost every time. A signed client rarely walks out the front door. They slip away in the gap between a 9pm call that hit voicemail and the firm that picked up first. Move the sliders to match your firm and watch your own number.</p>
+
+  <div class="grid">
+    <div class="card reveal d3">
+      <div class="card-label">Your firm's numbers</div>
+      <div id="fields"></div>
+    </div>
+    <div class="card reveal d3" style="display:flex;flex-direction:column;justify-content:center;gap:18px">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint)">What it means</div>
+      <p id="narrative" style="font-size:15.5px;color:var(--muted);font-weight:300;line-height:1.7"></p>
+      <div style="height:1px;background:var(--line)"></div>
+      <p style="font-size:13px;color:var(--faint);font-weight:300">These are your inputs, not our claims. Adjust anything that looks off and the math updates live.</p>
+    </div>
+  </div>
+
+  <div class="result reveal d4">
+    <div class="result-inner">
+      <div class="result-label">Estimated annual leak</div>
+      <div class="big-num"><span class="cur">$</span><span id="bigNum">0</span></div>
+      <div class="result-cap" id="resCap"></div>
+    </div>
+    <div class="breakdown" id="breakdown"></div>
+  </div>
+
+  <div class="seen reveal d4">
+    <div class="seen-label">What we consistently see across traffic firms</div>
+    <div class="seen-grid">
+      <div class="seen-item">
+        <div class="seen-n">01</div>
+        <p>The leak isn't daytime. It's after 6pm, weekends, and the hours your team is in court. That's exactly when the panicked, high-intent caller is dialing three firms at once.</p>
+      </div>
+      <div class="seen-item">
+        <div class="seen-n">02</div>
+        <p>Speed beats reputation. The firm that answers in seconds signs the client, even when a better-reviewed firm two miles away let it ring out.</p>
+      </div>
+      <div class="seen-item">
+        <div class="seen-n">03</div>
+        <p>The most expensive hours are the ones your paralegals spend on "how much" and "will this affect my insurance." That's usually when the case worth signing goes unanswered.</p>
+      </div>
+    </div>
+    <p class="seen-foot">Most firms we look at land somewhere in the low-to-mid six figures a year, before they tighten any of this. Yours will sit wherever your numbers above put it.</p>
+  </div>
+
+  <div class="cta reveal d4">
+    <h2>Want to see exactly where it's leaking?</h2>
+    <p>15 minutes. I'll walk you through where these calls are slipping to other firms, and what catching them looks like for your firm specifically.</p>
+    <a class="btn" id="ctaBtn" href="https://calendar.app.google/MLAyj5yX2vWMg9px6" target="_blank" rel="noopener">Book the 15-minute walkthrough</a>
+    <div class="cta-fine">No pitch deck. Just your numbers and where they're going.</div>
+  </div>
+
+  <div class="foot reveal d4">
+    <span class="mono">Estimate only.</span> Built from the figures you entered above, using conservative assumptions you can change.<br>
+    A model to size the gap, not a guarantee of recovery. · Quixas Technology
+  </div>
+</div>
+
+<script>
+const fmt = n => Math.round(n).toLocaleString('en-US');
+const FIELDS = [
+  {id:'value', name:'Average case value', min:1500, max:8000, step:250, val:5000, fmt:v=>'$'+fmt(v), hint:'A signed ticket or DUI matter, on average.'},
+  {id:'calls', name:'New-client calls per week', min:5, max:120, step:1, val:35, fmt:v=>v, hint:'Inbound calls from potential clients.'},
+  {id:'miss', name:'% missed or sent to voicemail', min:5, max:60, step:1, val:25, fmt:v=>v+'%', hint:'After hours, during court, or while the desk is busy.'},
+  {id:'close', name:'% of caught calls you sign', min:10, max:80, step:1, val:35, fmt:v=>v+'%', hint:'Of the leads you actually reach, how many retain.'},
+];
+function compute(v){
+  const missedPerWeek = v.calls*(v.miss/100);
+  const lostSignedPerWeek = missedPerWeek*(v.close/100);
+  const annual = lostSignedPerWeek*52*v.value;
+  return {
+    annual,
+    cap:`That's roughly <strong>${lostSignedPerWeek.toFixed(1)} signed cases a week</strong> going to whoever answered instead.`,
+    narrative:`You take about <strong>${v.calls} calls a week</strong>. Around <strong>${Math.round(missedPerWeek)}</strong> never get answered live. At your close rate, that's the equivalent of handing roughly ${Math.round(lostSignedPerWeek*52)} signed cases a year to the firm that picked up first.`,
+    bd:[
+      {num:Math.round(missedPerWeek), lab:'calls missed / week'},
+      {num:Math.round(lostSignedPerWeek*52), lab:'lost cases / year'},
+      {num:'$'+fmt(annual/12), lab:'leak / month'},
+    ]
+  };
+}
+
+const fieldsEl=document.getElementById('fields');
+let state={},animFrom=0;
+FIELDS.forEach(f=>{
+  state[f.id]=f.val;
+  const wrap=document.createElement('div');wrap.className='field';
+  wrap.innerHTML=`<div class="field-top"><span class="field-name">${f.name}</span><span class="field-val" id="v_${f.id}">${f.fmt(f.val)}</span></div><input type="range" id="r_${f.id}" min="${f.min}" max="${f.max}" step="${f.step}" value="${f.val}"><div class="field-hint">${f.hint}</div>`;
+  fieldsEl.appendChild(wrap);
+  const input=wrap.querySelector('input');
+  const setP=()=>{const p=((input.value-f.min)/(f.max-f.min))*100;input.style.setProperty('--p',p+'%');};
+  setP();
+  input.addEventListener('input',()=>{state[f.id]=+input.value;document.getElementById('v_'+f.id).textContent=f.fmt(+input.value);setP();render();});
+});
+function render(){
+  const out=compute(state);
+  document.getElementById('resCap').innerHTML=out.cap;
+  document.getElementById('narrative').innerHTML=out.narrative;
+  document.getElementById('breakdown').innerHTML=out.bd.map(b=>`<div class="bd"><div class="bd-num">${typeof b.num==='number'?fmt(b.num):b.num}</div><div class="bd-lab">${b.lab}</div></div>`).join('');
+  animateNum(animFrom,out.annual);animFrom=out.annual;
+}
+function animateNum(from,to){
+  const el=document.getElementById('bigNum');const dur=420,t0=performance.now();
+  function step(t){const k=Math.min(1,(t-t0)/dur);const e=1-Math.pow(1-k,3);el.textContent=fmt(from+(to-from)*e);if(k<1)requestAnimationFrame(step);}
+  requestAnimationFrame(step);
+}
+render();
+</script>
+</body>
+</html>
