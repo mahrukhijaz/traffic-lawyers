@@ -6,66 +6,92 @@
 <title>The Quiet Leak · Traffic Firm Revenue Calculator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Space+Mono:wght@400;700&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Space+Mono:wght@400;700&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js" type="module"></script>
 <style>
   :root{
-    --bg:#0d0f12;--panel:#14171c;--panel-2:#1a1e24;--line:#262b33;
-    --ink:#eef1f4;--muted:#8b95a3;--faint:#5a6470;
-    --red:#ff5a4d;--red-dim:#3a2220;--teal:#3ee6b0;
+    --bg:#FFFFFF;--paper:#ffffff;--paper-2:#faf7f2;--line:#ece4d8;--line-2:#ddd2c2;
+    --ink:#221d17;--muted:#6b6052;--faint:#9a8d7a;
+    --red:#c8401f;--red-soft:#ecd6c9;--red-bg:#fbeee7;
+    --ink-blue:#1f2d3a;--amber:#c98a2b;--teal:#2f7d62;
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{background:var(--bg);color:var(--ink);font-family:'Sora',sans-serif;font-weight:300;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 70% 45% at 75% -8%, rgba(255,90,77,.14), transparent 60%),radial-gradient(ellipse 55% 38% at 8% 108%, rgba(62,230,176,.07), transparent 60%),radial-gradient(circle at 50% 40%, rgba(120,140,200,.04), transparent 55%)}
-  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;background-image:radial-gradient(rgba(255,255,255,.025) 1px,transparent 1px);background-size:3px 3px}
-  .wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:clamp(28px,6vw,72px) clamp(20px,5vw,56px) 90px}
-  .eyebrow{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--red);margin-bottom:22px;display:flex;align-items:center;gap:10px}
-  .eyebrow::before{content:"";width:28px;height:1px;background:var(--red)}
-  h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(34px,6.5vw,60px);line-height:1.04;letter-spacing:-.02em;margin-bottom:20px;max-width:15ch}
-  h1 em{font-style:italic;color:var(--red)}
-  .sub{color:var(--muted);font-size:clamp(15px,2.2vw,18px);max-width:48ch;font-weight:300}
-  .grid{display:grid;grid-template-columns:1fr;gap:18px;margin-top:40px}
-  @media(min-width:760px){.grid{grid-template-columns:1.05fr .95fr;gap:24px}}
-  .card{background:rgba(24,28,34,.55);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:clamp(22px,4vw,32px);box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 20px 50px -20px rgba(0,0,0,.6)}
-  .card-label{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin-bottom:24px}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 55% 38% at 82% -6%,rgba(200,64,31,.045),transparent 58%)}
+  body::after{content:none}
+  .wrap{position:relative;z-index:1;max-width:1140px;margin:0 auto;padding:clamp(28px,6vw,72px) clamp(20px,5vw,56px) 90px}
+
+  /* header band with signal motif */
+  .head{display:flex;align-items:flex-start;justify-content:space-between;gap:30px;flex-wrap:wrap}
+  .head-l{flex:1;min-width:280px}
+  .eyebrow{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--red);margin-bottom:22px;display:flex;align-items:center;gap:11px}
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--red)}
+  h1{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(34px,6.2vw,62px);line-height:1.02;letter-spacing:-.02em;margin-bottom:22px;max-width:15ch;color:var(--ink)}
+  h1 em{font-style:italic;color:var(--red);font-weight:500}
+  .sub{color:var(--muted);font-size:clamp(15px,2.1vw,18px);max-width:50ch;font-weight:400}
+
+  /* lottie animation in header */
+  .scene{flex-shrink:0;width:clamp(240px,32vw,360px);height:clamp(240px,32vw,360px);margin-top:-6px}
+  .scene dotlottie-wc{width:100%;height:100%;display:block}
+  @media(max-width:612px){
+    .head{flex-direction:column}
+    .scene{margin:18px auto 0;width:clamp(220px,70vw,300px);height:clamp(220px,70vw,300px)}
+  }
+
+  .grid{display:grid;grid-template-columns:1fr;gap:18px;margin-top:46px}
+  @media(min-width:760px){.grid{grid-template-columns:1.05fr .95fr;gap:22px}}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:clamp(22px,4vw,32px);box-shadow:0 1px 2px rgba(34,29,23,.04),0 22px 48px -30px rgba(34,29,23,.3)}
+  .card-label{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);margin-bottom:24px;display:flex;align-items:center;gap:8px}
+  .card-label svg{width:15px;height:15px;opacity:.7}
+
   .field{margin-bottom:26px}.field:last-child{margin-bottom:0}
   .field-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:13px;gap:12px}
   .field-name{font-size:14.5px;color:var(--ink);font-weight:400}
-  .field-val{font-family:'Space Mono',monospace;font-size:16px;font-weight:700;color:var(--teal);white-space:nowrap}
-  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:4px;background:linear-gradient(to right,var(--teal) 0%,var(--teal) var(--p,30%),var(--line) var(--p,30%),var(--line) 100%);outline:none;cursor:pointer}
-  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:var(--ink);border:3px solid var(--teal);cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.4);transition:transform .15s ease}
-  input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.18)}
-  input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--ink);border:3px solid var(--teal);cursor:pointer}
-  .field-hint{font-size:12.5px;color:var(--faint);margin-top:9px;font-weight:300}
-  .result{margin-top:18px;background:rgba(40,28,26,.5);backdrop-filter:blur(20px) saturate(150%);-webkit-backdrop-filter:blur(20px) saturate(150%);border:1px solid rgba(255,90,77,.22);border-radius:18px;overflow:hidden;position:relative;box-shadow:0 1px 0 rgba(255,255,255,.05) inset,0 24px 60px -24px rgba(255,90,77,.18)}
-  .result::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 50% 0%,rgba(255,90,77,.12),transparent 70%);pointer-events:none}
-  .result-inner{padding:clamp(28px,5vw,44px);text-align:center;position:relative}
-  .result-label{font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--red);margin-bottom:16px}
-  .big-num{font-family:'Fraunces',serif;font-weight:600;color:var(--red);font-size:clamp(52px,11vw,120px);line-height:.95;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
-  .big-num .cur{font-size:.5em;vertical-align:.32em;font-weight:500;margin-right:.04em}
-  .result-cap{color:var(--muted);font-size:15px;margin-top:18px;font-weight:300}
-  .result-cap strong{color:var(--ink);font-weight:500}
-  .breakdown{display:flex;flex-wrap:wrap;justify-content:center;border-top:1px solid var(--line)}
-  .bd{flex:1;min-width:140px;padding:20px;text-align:center;border-right:1px solid var(--line)}
+  .field-val{font-family:'Space Mono',monospace;font-size:16px;font-weight:700;color:var(--red);white-space:nowrap}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:5px;background:linear-gradient(to right,var(--red) 0%,var(--red) var(--p,30%),var(--line-2) var(--p,30%),var(--line-2) 100%);outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:21px;height:21px;border-radius:50%;background:var(--paper);border:3px solid var(--red);cursor:pointer;box-shadow:0 2px 8px rgba(34,29,23,.2);transition:transform .15s ease}
+  input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.16)}
+  input[type=range]::-moz-range-thumb{width:21px;height:21px;border-radius:50%;background:var(--paper);border:3px solid var(--red);cursor:pointer}
+  .field-hint{font-size:12.5px;color:var(--faint);margin-top:9px;font-weight:400}
+
+  .means-head{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+  .means-body{font-size:15.5px;color:var(--muted);font-weight:400;line-height:1.7}
+  .means-note{font-size:13px;color:var(--faint);font-weight:400}
+
+  .result{margin-top:18px;background:linear-gradient(180deg,var(--red-bg),var(--paper));border:1px solid var(--red-soft);border-radius:18px;overflow:hidden;position:relative;box-shadow:0 18px 50px -30px rgba(200,64,31,.4)}
+  .result-inner{padding:clamp(28px,5vw,46px);text-align:center;position:relative}
+  .result-label{font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:14px}
+  .big-num{font-family:'Fraunces',serif;font-weight:600;color:var(--red);font-size:clamp(54px,12vw,124px);line-height:.92;letter-spacing:-.035em;font-variant-numeric:tabular-nums}
+  .big-num .cur{font-size:.46em;vertical-align:.34em;font-weight:500;margin-right:.04em}
+  .result-cap{color:var(--muted);font-size:15px;margin-top:18px;font-weight:400;max-width:48ch;margin-left:auto;margin-right:auto}
+  .result-cap strong{color:var(--ink);font-weight:600}
+  .breakdown{display:flex;flex-wrap:wrap;justify-content:center;border-top:1px solid var(--red-soft)}
+  .bd{flex:1;min-width:140px;padding:22px 20px;text-align:center;border-right:1px solid var(--red-soft)}
   .bd:last-child{border-right:none}
-  .bd-num{font-family:'Space Mono',monospace;font-size:21px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+  .bd-num{font-family:'Space Mono',monospace;font-size:22px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
   .bd-lab{font-size:12px;color:var(--faint);margin-top:6px}
-  .cta{margin-top:40px;text-align:center;padding:clamp(28px,5vw,44px);border:1px solid rgba(255,255,255,.08);border-radius:18px;background:rgba(30,34,40,.55);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);box-shadow:0 1px 0 rgba(255,255,255,.05) inset}
-  .cta h2{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(22px,3.5vw,30px);letter-spacing:-.015em;margin-bottom:12px}
-  .seen{margin-top:18px;background:rgba(24,28,34,.5);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:clamp(24px,4.5vw,38px);box-shadow:0 1px 0 rgba(255,255,255,.04) inset}
-  .seen-label{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin-bottom:26px}
-  .seen-grid{display:grid;grid-template-columns:1fr;gap:22px}
-  @media(min-width:680px){.seen-grid{grid-template-columns:repeat(3,1fr);gap:28px}}
-  .seen-item{display:flex;flex-direction:column;gap:12px}
-  .seen-n{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--red);letter-spacing:.1em}
-  .seen-item p{font-size:14px;color:var(--muted);font-weight:300;line-height:1.65}
-  .seen-foot{margin-top:28px;padding-top:22px;border-top:1px solid var(--line);font-size:14px;color:var(--faint);font-weight:300;line-height:1.7}
-  .cta p{color:var(--muted);font-size:15px;max-width:42ch;margin:0 auto 26px;font-weight:300}
-  .btn{display:inline-block;font-family:'Sora',sans-serif;font-weight:500;font-size:15.5px;background:var(--red);color:#fff;text-decoration:none;padding:16px 38px;border-radius:11px;transition:transform .18s ease,box-shadow .18s ease;box-shadow:0 8px 28px rgba(255,90,77,.28)}
-  .btn:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(255,90,77,.4)}
-  .cta-fine{margin-top:18px;font-size:12.5px;color:var(--faint)}
-  .foot{margin-top:46px;text-align:center;font-size:12.5px;color:var(--faint);font-weight:300;line-height:1.7}
+
+  .seen{margin-top:18px;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:clamp(24px,4.5vw,40px)}
+  .seen-label{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);margin-bottom:30px}
+  .seen-grid{display:grid;grid-template-columns:1fr;gap:26px}
+  @media(min-width:680px){.seen-grid{grid-template-columns:repeat(3,1fr);gap:30px}}
+  .seen-item{display:flex;flex-direction:column;gap:14px}
+  .seen-ic{width:38px;height:38px;border-radius:10px;background:var(--red-bg);display:flex;align-items:center;justify-content:center;border:1px solid var(--red-soft)}
+  .seen-ic svg{width:20px;height:20px;stroke:var(--red)}
+  .seen-item p{font-size:14px;color:var(--muted);font-weight:400;line-height:1.65}
+  .seen-foot{margin-top:32px;padding-top:24px;border-top:1px solid var(--line);font-size:14px;color:var(--faint);font-weight:400;line-height:1.7}
+
+  .cta{margin-top:40px;text-align:center;padding:clamp(30px,5vw,48px);border:1px solid var(--line-2);border-radius:18px;background:var(--ink-blue);position:relative;overflow:hidden}
+  .cta::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 0%,rgba(200,64,31,.18),transparent 70%);pointer-events:none}
+  .cta h2{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(23px,3.5vw,32px);letter-spacing:-.015em;margin-bottom:12px;color:#f7f2ea;position:relative}
+  .cta p{color:#c3b9a8;font-size:15px;max-width:44ch;margin:0 auto 28px;font-weight:400;position:relative}
+  .btn{position:relative;display:inline-block;font-family:'Sora',sans-serif;font-weight:600;font-size:15.5px;background:var(--red);color:#fff;text-decoration:none;padding:17px 40px;border-radius:11px;transition:transform .18s ease,box-shadow .18s ease;box-shadow:0 10px 30px rgba(200,64,31,.4)}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(200,64,31,.55)}
+  .cta-fine{margin-top:18px;font-size:12.5px;color:#9a8d7a;position:relative}
+  .foot{margin-top:44px;text-align:center;font-size:12.5px;color:var(--faint);font-weight:400;line-height:1.7}
   .foot .mono{font-family:'Space Mono',monospace;color:var(--muted)}
+
   .reveal{opacity:0;transform:translateY(16px);animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards}
   @keyframes rise{to{opacity:1;transform:none}}
   .d1{animation-delay:.05s}.d2{animation-delay:.13s}.d3{animation-delay:.22s}.d4{animation-delay:.32s}
@@ -73,20 +99,34 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="eyebrow reveal d1">Quixas Technology · For Traffic &amp; DUI Firms</div>
-  <h1 class="reveal d1">The cases that leave <em>without setting off any alarm</em>.</h1>
-  <p class="sub reveal d2">After building intake systems for a number of traffic firms, you start to see the same leak almost every time. A signed client rarely walks out the front door. They slip away in the gap between a 9pm call that hit voicemail and the firm that picked up first. Move the sliders to match your firm and watch your own number.</p>
+  <div class="head reveal d1">
+    <div class="head-l">
+      <div class="eyebrow">Quixas Technology · For Traffic &amp; DUI Firms</div>
+      <h1>The cases that leave <em>without setting off any alarm</em>.</h1>
+      <p class="sub">After building intake systems for a number of traffic firms, you start to see the same leak almost every time. A signed client rarely walks out the front door. They slip away in the gap between a 9pm call that hit voicemail and the firm that picked up first. Move the sliders to match your firm and watch your own number.</p>
+    </div>
+    <div class="scene" aria-hidden="true">
+      <dotlottie-wc
+        src="https://lottie.host/78c43bc1-d9e0-4c51-887f-b6896b9a0499/glM7rX5bYV.lottie"
+        style="width:100%;height:100%;background:transparent"
+        background="transparent"
+        autoplay loop></dotlottie-wc>
+    </div>
+  </div>
 
   <div class="grid">
     <div class="card reveal d3">
-      <div class="card-label">Your firm's numbers</div>
+      <div class="card-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12h18M12 3v18" stroke-linecap="round"/></svg>
+        Your firm's numbers
+      </div>
       <div id="fields"></div>
     </div>
     <div class="card reveal d3" style="display:flex;flex-direction:column;justify-content:center;gap:18px">
-      <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint)">What it means</div>
-      <p id="narrative" style="font-size:15.5px;color:var(--muted);font-weight:300;line-height:1.7"></p>
+      <div class="means-head">What it means</div>
+      <p class="means-body" id="narrative"></p>
       <div style="height:1px;background:var(--line)"></div>
-      <p style="font-size:13px;color:var(--faint);font-weight:300">These are your inputs, not our claims. Adjust anything that looks off and the math updates live.</p>
+      <p class="means-note">These are your inputs, not our claims. Adjust anything that looks off and the math updates live.</p>
     </div>
   </div>
 
@@ -103,15 +143,15 @@
     <div class="seen-label">What we consistently see across traffic firms</div>
     <div class="seen-grid">
       <div class="seen-item">
-        <div class="seen-n">01</div>
+        <div class="seen-ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/></svg></div>
         <p>The leak isn't daytime. It's after 6pm, weekends, and the hours your team is in court. That's exactly when the panicked, high-intent caller is dialing three firms at once.</p>
       </div>
       <div class="seen-item">
-        <div class="seen-n">02</div>
+        <div class="seen-ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></div>
         <p>Speed beats reputation. The firm that answers in seconds signs the client, even when a better-reviewed firm two miles away let it ring out.</p>
       </div>
       <div class="seen-item">
-        <div class="seen-n">03</div>
+        <div class="seen-ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
         <p>The most expensive hours are the ones your paralegals spend on "how much" and "will this affect my insurance." That's usually when the case worth signing goes unanswered.</p>
       </div>
     </div>
@@ -154,7 +194,6 @@ function compute(v){
     ]
   };
 }
-
 const fieldsEl=document.getElementById('fields');
 let state={},animFrom=0;
 FIELDS.forEach(f=>{
